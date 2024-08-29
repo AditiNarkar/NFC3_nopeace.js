@@ -2,9 +2,12 @@ import { ethers } from "ethers";
 import {
   tokenContractAddress,
   medicalContractAddress,
-  token_abi,
-  medical_abi,
+
 } from "../constants";
+
+import token_abi from "../constants/TokenABI.json"
+import medical_abi from "../constants/ContractABI.json"
+
 
 export const getContract = async () => {
   if (typeof window === "undefined") {

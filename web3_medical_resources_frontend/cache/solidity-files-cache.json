@@ -1,10 +1,10 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
-    "D:\\Blockchain_YT\\NFC3_nopeace.js\\web3_medical_resources_frontend\\contracts\\MedicalResearch.sol": {
-      "lastModificationDate": 1724939853753,
-      "contentHash": "a39a7c7ae41126642bf9cfbfca14436e",
-      "sourceName": "contracts/MedicalResearch.sol",
+    "/Users/bigfatrat/Desktop/ADT/NFC3_nopeace/web3_medical_resources_frontend/contracts/MedChainToken.sol": {
+      "lastModificationDate": 1724949053810,
+      "contentHash": "157626f81510ba99eade3b2a14167aed",
+      "sourceName": "contracts/MedChainToken.sol",
       "solcConfig": {
         "version": "0.8.24",
         "settings": {
@@ -43,11 +43,11 @@
         "^0.8.0"
       ],
       "artifacts": [
-        "MedicalResearch"
+        "MedChainToken"
       ]
     },
-    "D:\\Blockchain_YT\\NFC3_nopeace.js\\web3_medical_resources_frontend\\node_modules\\@openzeppelin\\contracts\\token\\ERC20\\ERC20.sol": {
-      "lastModificationDate": 1724939500317,
+    "/Users/bigfatrat/Desktop/ADT/NFC3_nopeace/web3_medical_resources_frontend/node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol": {
+      "lastModificationDate": 1724949542029,
       "contentHash": "c6375ef25e84c90b3d15f9ec4eef218f",
       "sourceName": "@openzeppelin/contracts/token/ERC20/ERC20.sol",
       "solcConfig": {
@@ -94,8 +94,8 @@
         "ERC20"
       ]
     },
-    "D:\\Blockchain_YT\\NFC3_nopeace.js\\web3_medical_resources_frontend\\node_modules\\@openzeppelin\\contracts\\utils\\Context.sol": {
-      "lastModificationDate": 1724939498545,
+    "/Users/bigfatrat/Desktop/ADT/NFC3_nopeace/web3_medical_resources_frontend/node_modules/@openzeppelin/contracts/utils/Context.sol": {
+      "lastModificationDate": 1724949541132,
       "contentHash": "67bfbc07588eb8683b3fd8f6f909563e",
       "sourceName": "@openzeppelin/contracts/utils/Context.sol",
       "solcConfig": {
@@ -137,8 +137,8 @@
         "Context"
       ]
     },
-    "D:\\Blockchain_YT\\NFC3_nopeace.js\\web3_medical_resources_frontend\\node_modules\\@openzeppelin\\contracts\\interfaces\\draft-IERC6093.sol": {
-      "lastModificationDate": 1724939498892,
+    "/Users/bigfatrat/Desktop/ADT/NFC3_nopeace/web3_medical_resources_frontend/node_modules/@openzeppelin/contracts/interfaces/draft-IERC6093.sol": {
+      "lastModificationDate": 1724949536725,
       "contentHash": "4aefc698f77ecbace7f401257dfe182d",
       "sourceName": "@openzeppelin/contracts/interfaces/draft-IERC6093.sol",
       "solcConfig": {
@@ -182,51 +182,8 @@
         "IERC721Errors"
       ]
     },
-    "D:\\Blockchain_YT\\NFC3_nopeace.js\\web3_medical_resources_frontend\\node_modules\\@openzeppelin\\contracts\\token\\ERC20\\IERC20.sol": {
-      "lastModificationDate": 1724939502810,
-      "contentHash": "5517c8678c18eb1a8ba58810e7ca39ca",
-      "sourceName": "@openzeppelin/contracts/token/ERC20/IERC20.sol",
-      "solcConfig": {
-        "version": "0.8.24",
-        "settings": {
-          "evmVersion": "paris",
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata",
-                "devdoc",
-                "userdoc",
-                "storageLayout",
-                "evm.gasEstimates"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          },
-          "metadata": {
-            "useLiteralContent": true
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.20"
-      ],
-      "artifacts": [
-        "IERC20"
-      ]
-    },
-    "D:\\Blockchain_YT\\NFC3_nopeace.js\\web3_medical_resources_frontend\\node_modules\\@openzeppelin\\contracts\\token\\ERC20\\extensions\\IERC20Metadata.sol": {
-      "lastModificationDate": 1724939502876,
+    "/Users/bigfatrat/Desktop/ADT/NFC3_nopeace/web3_medical_resources_frontend/node_modules/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol": {
+      "lastModificationDate": 1724949543193,
       "contentHash": "4c02fa6f7ae7b6c289cef80424f0c875",
       "sourceName": "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol",
       "solcConfig": {
@@ -270,10 +227,53 @@
         "IERC20Metadata"
       ]
     },
-    "D:\\Blockchain_YT\\NFC3_nopeace.js\\web3_medical_resources_frontend\\contracts\\MedChainToken.sol": {
-      "lastModificationDate": 1724941959394,
-      "contentHash": "af2ba58a902dc6818dc394290c39a76d",
-      "sourceName": "contracts/MedChainToken.sol",
+    "/Users/bigfatrat/Desktop/ADT/NFC3_nopeace/web3_medical_resources_frontend/node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol": {
+      "lastModificationDate": 1724949542029,
+      "contentHash": "5517c8678c18eb1a8ba58810e7ca39ca",
+      "sourceName": "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "IERC20"
+      ]
+    },
+    "/Users/bigfatrat/Desktop/ADT/NFC3_nopeace/web3_medical_resources_frontend/contracts/MedicalResearch.sol": {
+      "lastModificationDate": 1724949053812,
+      "contentHash": "a39a7c7ae41126642bf9cfbfca14436e",
+      "sourceName": "contracts/MedicalResearch.sol",
       "solcConfig": {
         "version": "0.8.24",
         "settings": {
@@ -312,7 +312,7 @@
         "^0.8.0"
       ],
       "artifacts": [
-        "MedChainToken"
+        "MedicalResearch"
       ]
     }
   }

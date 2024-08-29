@@ -28,6 +28,30 @@ const Sepolia = defineChain({
   },
 });
 
+
+const LocalNetwork = defineChain({
+  id: 31337, // Default Hardhat network ID
+  name: "Local Hardhat Network",
+  network: "Hardhat",
+  nativeCurrency: {
+    decimals: 18,
+    name: "Ether",
+    symbol: "ETH",
+  },
+  rpcUrls: {
+    default: {
+      http: ["http://127.0.0.1:8545/"], // URL for local Hardhat network
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: "Local Explorer",
+      url: "http://127.0.0.1:8545/", // Replace with your local explorer URL if available
+    },
+  },
+});
+
+
 export default function RootLayout({ children }) {
   return (
     <html className={styles.html} lang="en">
@@ -43,8 +67,8 @@ export default function RootLayout({ children }) {
             embeddedWallets: {
               createOnLogin: "users-without-wallets",
             },
-            defaultChain: Sepolia,
-            supportedChains: [Sepolia],
+            defaultChain: LocalNetwork,
+            supportedChains: [LocalNetwork],
           }}
         >
           <Header />

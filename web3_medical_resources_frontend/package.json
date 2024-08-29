@@ -17,7 +17,7 @@
     "@privy-io/react-auth": "^1.81.2",
     "axios": "^1.7.5",
     "dotenv": "^16.4.5",
-    "ethers": "^6.1.0",
+    "ethers": "^6.13.2",
     "form-data": "^4.0.0",
     "formidable": "^3.5.1",
     "hardhat": "^2.22.9",

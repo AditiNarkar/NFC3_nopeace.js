@@ -2,20 +2,28 @@
 import React, { useState } from "react";
 import styles from "../styles.module.css";
 import axios from 'axios';
-import { uploadPaper } from "@/utils/queries";
+import { uploadPaper, getPapers } from "@/utils/queries";
 
 export default function Publish() {
     const [file, setFile] = useState("");
     const [title, setTitle] = useState("");
-    const [tags, setTags] = useState("");
+    const [tags, setTags] = useState([]);
     const [wordLimit, setWordLimit] = useState(0);
     const [additionalParams, setAdditionalParams] = useState("");
     const [accessAmount, setAccessAmount] = useState(0);
     const [contentHash, setContentHash] = useState("");
     //QmYsQ3ocf3XYqTsvJDSticUEyip7TiXH7oamfJ1kdaNvDV
-    async function publishResearch() {
+    async function publishResearch(e) {
+        e.preventDefault();
+        console.log("1")
         const response = await uploadPaper(title, contentHash, accessAmount, tags)
         console.log(response)
+        console.log("2")
+
+        const papers = await getPapers()
+        console.log(papers)
+
+        console.log("3")
     }
 
     const handlePinata = async (e) => {
@@ -58,8 +66,8 @@ export default function Publish() {
                     </div>
                     <div style={{ width: "100%" }}>
                         <div>Tags/Keywords</div>
-                        <input style={{ height: 30, width: "100%" }} type="text" value={tags}
-                            onChange={(e) => setTags(e.target.value)} />
+                        <input style={{ height: 30, width: "100%" }} type="text" value={tags.join(', ')}
+                            onChange={(e) => setTags(e.target.value.split(',').map(tag => tag.trim()))} />
                     </div>
 
                     <div style={{ width: "100%" }}>
@@ -99,7 +107,7 @@ export default function Publish() {
                         <button
                             style={{ width: "100%", border: "1px solid white" }}
                             className={styles.ConnectButton}
-                            onSubmit={publishResearch}
+                            onClick={publishResearch}
                         >
                             Submit
                         </button>

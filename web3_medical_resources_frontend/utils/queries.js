@@ -7,15 +7,20 @@ const parseErrorMsg = (e) => {
 
 let contractObject = null;
 
-const initContract = () => {
+const initContract = async () => {
   if (!contractObject) {
-    contractObject = getContract();
+    contractObject = await getContract();
+    const { tokenContractReader, medicalContractReader } = contractObject;
+    console.log(tokenContractReader, medicalContractReader)
+    return { tokenContractReader, medicalContractReader };
   }
-  return contractObject;
 };
+
+
 export async function uploadPaper(title, contentHash, accessFee, keywords) {
   try {
-    const contract = initContract();
+    const { tokenContractReader, medicalContractReader } = await initContract();
+    const contract = medicalContractReader
     if (!contract) throw new Error("Contract is not initialized");
     const tx = await contract.uploadPaper(
       title,
@@ -88,7 +93,7 @@ export async function approveContribution(paperId, contributionIndex) {
 
 export async function getPapers() {
   try {
-    const contract = initContract();
+    const { tokenContract, contract } = initContract();
     if (!contract) throw new Error("Contract is not initialized");
     const papers = await contract.getPapers();
     console.log("Papers:", papers);
