@@ -15,15 +15,12 @@ export default function Publish() {
     //QmYsQ3ocf3XYqTsvJDSticUEyip7TiXH7oamfJ1kdaNvDV
     async function publishResearch(e) {
         e.preventDefault();
-        console.log("1")
         const response = await uploadPaper(title, contentHash, accessAmount, tags)
         console.log(response)
-        console.log("2")
 
         const papers = await getPapers()
         console.log(papers)
 
-        console.log("3")
     }
 
     const handlePinata = async (e) => {

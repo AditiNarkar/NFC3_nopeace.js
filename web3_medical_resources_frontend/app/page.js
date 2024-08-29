@@ -1,11 +1,20 @@
-
+"use client"
 import styles from "./styles.module.css";
 import Image from "next/image";
 import paper from "../assets/paperPhoto.png";
 import Link from "next/link";
-import { uploadPaper } from "@/utils/queries";
+import { getPapers } from "@/utils/queries";
+import { useEffect } from "react";
 
 export default function Home() {
+
+  useEffect(() => {
+    async function getAllPapers() {
+      const papers = await getPapers()
+      console.log(papers)
+    }
+    getAllPapers()
+  }, [])
 
   return (
     <>

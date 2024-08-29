@@ -93,7 +93,8 @@ export async function approveContribution(paperId, contributionIndex) {
 
 export async function getPapers() {
   try {
-    const { tokenContract, contract } = initContract();
+    const { tokenContractReader, medicalContractReader } = await initContract();
+    const contract = medicalContractReader;
     if (!contract) throw new Error("Contract is not initialized");
     const papers = await contract.getPapers();
     console.log("Papers:", papers);
