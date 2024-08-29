@@ -18,31 +18,31 @@
 //           setError('Please select a file');
 //           return;
 //         }
-      
+
 //         setUploading(true);
 //         setError(null);
 //         setResult(null);
-      
+
 //         const formData = new FormData();
 //         formData.append('file', file);
-      
+
 //         try {
 //           const response = await fetch('/api/uploadPinata', {
 //             method: 'POST',
 //             body: formData,
 //           });
-      
+
 //           // Log the raw response for debugging
 //           const text = await response.text();
 //           console.log('Raw response:', text);
-      
+
 //           // Attempt to parse the response as JSON
 //           const data = JSON.parse(text);
-      
+
 //           if (!response.ok) {
 //             throw new Error(data.error || 'Upload failed');
 //           }
-      
+
 //           setResult(data);
 //         } catch (err) {
 //           console.error('Error uploading file:', err);
@@ -51,7 +51,7 @@
 //           setUploading(false);
 //         }
 //       };
-      
+
 
 //     return (
 //         <div style={{ maxWidth: '400px', margin: '20px auto', padding: '20px', border: '1px solid #ccc', borderRadius: '5px' }}>
@@ -99,15 +99,15 @@
 
 // export default PinataUpload;
 
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import axios from 'axios'
 
 const page = () => {
     const [file, setFile] = useState('')
 
-    const handleSubmit = async (e) => {
+    const handlePinata = async (e) => {
         e.preventDefault()
-        try{
+        try {
             const fileData = new FormData()
             fileData.append('file', file)
             const responseData = await axios({
@@ -122,19 +122,19 @@ const page = () => {
             })
             const fileUrl = `https://gateway.pinata.cloud/ipfs/${responseData.data.IpfsHash}`
             console.log('File uploaded successfully:', fileUrl)
+            return fileUrl
         } catch (error) {
             console.error('Error uploading file:', error)
         }
     }
 
-  return (
-    <div>
-        <form>
-            <input type="file" onChange={(e) => setFile(e.target.files[0])} />
-            <button type="submit" onClick={handleSubmit}>Submit</button>
-        </form>
-    </div>
-  )
+    return (
+        <div>
+            <form>
+                <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+                <button type="submit" onClick={handleSubmit}>Submit</button>
+            </form>
+        </div>
+    )
 }
-
-export default page
+module.exports = { handlePinata }

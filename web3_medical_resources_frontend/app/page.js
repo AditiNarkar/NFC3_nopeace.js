@@ -2,6 +2,9 @@
 import styles from "./styles.module.css";
 import Image from "next/image";
 import paper from "../assets/paperPhoto.png";
+import Link from "next/link";
+import { uploadPaper } from "@/utils/queries";
+
 export default function Home() {
 
   return (
@@ -14,7 +17,7 @@ export default function Home() {
           ></input>
         </div>
         <button style={{ left: "36vw" }} className={styles.ConnectButton}>
-          Upload
+          <Link style={{ textDecoration: "none" }} href={`/publish`}>Publish Research</Link>
         </button>
       </div>
 

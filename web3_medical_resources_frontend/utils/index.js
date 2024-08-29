@@ -6,7 +6,7 @@ import {
   medical_abi,
 } from "../constants";
 
-export const getContract = () => {
+export const getContract = async () => {
   if (typeof window === "undefined") {
     console.error("window is undefined, this code must be run client-side.");
     return null;
@@ -21,8 +21,8 @@ export const getContract = () => {
       );
     }
 
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = provider.getSigner();
+    const provider = new ethers.BrowserProvider(ethereum);
+    const signer = await provider.getSigner();
     const tokenContractReader = new ethers.Contract(
       tokenContractAddress,
       token_abi,
@@ -34,7 +34,7 @@ export const getContract = () => {
       signer
     );
 
-    return tokenContractReader, medicalContractReader;
+    return { tokenContractReader, medicalContractReader };
   } catch (error) {
     console.error(
       "An error occurred while setting up the contract:",
