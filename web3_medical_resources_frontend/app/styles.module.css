@@ -11,7 +11,7 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding:5px;
+  padding: 5px;
   height: auto;
 }
 
@@ -64,4 +64,31 @@
   margin: 10px;
   display: flex;
   flex-direction: column;
+  height: auto;
+  gap: 10px;
+}
+
+.previewContainer {
+  display: grid;
+  grid-template-columns: 60% 40%;
+  padding: 20px 100px;
+}
+
+.previewContainer .getAccess {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 50px 10px;
+}
+
+.contributionFormParent{
+  display: grid;
+  grid-template-columns: 60% 40%;
+  padding: 0 150px;
+}
+.contributionForm {
+  display: flex;
+  flex-direction: column;
+ 
+  gap: 20px;
 }

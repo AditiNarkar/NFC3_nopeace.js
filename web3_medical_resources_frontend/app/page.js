@@ -12,9 +12,11 @@ export default function Home() {
             width={310}
             height={200}
           ></Image>
-          <div >Title</div>
+          <div style={{ display: "flex", justifyContent: "center", fontWeight: 600 }}>Title</div>
           <div>Authors:</div>
           <div>Posted By:</div>
+
+          <button style={{ width: "100%" }} className={styles.ConnectButton}>View</button>
         </div>
 
       </div>
