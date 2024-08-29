@@ -3,19 +3,37 @@ import styles from "../styles.module.css";
 export default function Contribution() {
     return (
         <>
-            <div style={{ fontWeight: 800, padding: "30px", display: "flex", justifyContent: "center" }}>Stake Contribution</div>
+            <div style={{ fontWeight: 800, padding: "30px", display: "flex", justifyContent: "center" }}>Stake Research Contribution</div>
             <div className={styles.contributionFormParent}>
                 <div className={styles.contributionForm}>
                     <div style={{ width: "100%" }}>
-                        <div>Contributing on research title by author </div>
+                        <div>Contributing on research title by owner </div>
                     </div>
                     <div style={{ width: "100%" }}>
                         <div>Research Title</div>
                         <input style={{ height: 30, width: "100%" }} type="text"></input>
                     </div>
                     <div style={{ width: "100%" }}>
-                        <div>Keywords</div>
+                        <div>Authors</div>
                         <input style={{ height: 30, width: "100%" }} type="text"></input>
+                    </div>
+                    <div style={{ width: "100%" }}>
+                        <div>Tags/Keywords</div>
+                        <input style={{ height: 30, width: "100%" }} type="text"></input>
+                    </div>
+                    <div style={{ width: "100%" }}>
+                        <div>Set Contributing Word Limit</div>
+                        <input style={{ height: 30, width: "100%" }} type="number"></input>
+                    </div>
+
+                    <div style={{ width: "100%" }}>
+                        <div>Additional Parameters for Contributor</div>
+                        <textarea style={{ height: 30, maxWidth: "100%", minWidth: "100%" }} type="text"></textarea>
+                    </div>
+
+                    <div style={{ width: "100%" }}>
+                        <div>Access Amount for your research(MCT)</div>
+                        <input style={{ height: 30, width: "100%" }} type="number"></input>
                     </div>
 
                     <div style={{ width: "100%" }}>
@@ -24,7 +42,7 @@ export default function Contribution() {
                     </div>
 
                     <div style={{ width: "100%" }}>
-                        <div>Upload your contribution</div>
+                        <div>Upload your research contribution</div>
                         <input style={{ height: 30, width: "100%" }} type="file"></input>
                     </div>
 
