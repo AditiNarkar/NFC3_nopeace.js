@@ -4,6 +4,14 @@ import paper from "../assets/paperPhoto.png"
 export default function Home() {
   return (
     <>
+      <div style={{ display: "flex", gap: 20, padding: "10px 20px", }}>
+        <div>
+          <input style={{ width: 600, height: 30 }} placeholder="Search"></input>
+        </div>
+        <button style={{ left: "36vw" }} className={styles.ConnectButton}>Upload</button>
+
+      </div>
+
       <div className={styles.pageContainer}>
         <div className={styles.paperDetails}>
           <Image
