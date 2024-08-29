@@ -4,13 +4,16 @@ import Image from "next/image";
 import paper from "../assets/paperPhoto.png";
 import Link from "next/link";
 import { getPapers } from "@/utils/queries";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
 
+  const [papers, setPapers] = useState()
   useEffect(() => {
     async function getAllPapers() {
-      const papers = await getPapers()
+      const fpapers = await getPapers()
+      setPapers(fpapers.target)
+      console.log(typeof papers)
       console.log(papers)
     }
     getAllPapers()
@@ -31,6 +34,9 @@ export default function Home() {
       </div>
 
       <div className={styles.pageContainer}>
+
+
+
         <div className={styles.paperDetails}>
           <Image src={paper} width={310} height={200}></Image>
           <div
@@ -48,6 +54,13 @@ export default function Home() {
             View
           </button>
         </div>
+
+
+
+
+
+
+
       </div>
     </>
   );
