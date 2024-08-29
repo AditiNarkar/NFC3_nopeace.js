@@ -24,7 +24,8 @@ export const getContract = async () => {
       );
     }
 
-    const provider = new ethers.BrowserProvider(ethereum);
+    // const provider = new ethers.BrowserProvider(ethereum);
+    const provider = new ethers.JsonRpcProvider("http://127.0.0.1:8545/");
     const signer = await provider.getSigner();
     const tokenContractReader = new ethers.Contract(
       tokenContractAddress,
