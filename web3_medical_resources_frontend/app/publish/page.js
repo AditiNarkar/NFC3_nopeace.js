@@ -20,12 +20,21 @@ export default function Publish() {
                     </div>
 
                     <div style={{ width: "100%" }}>
-                        <div>Stake Amount (MCT)</div>
+                        <div>Word Limit</div>
+                        <input style={{ height: 30, width: "100%" }} type="number"></input>
+                    </div>
+                    <div style={{ width: "100%" }}>
+                        <div>Additional Parameters for Contributor</div>
+                        <textarea style={{ height: 30, maxWidth: "100%", minWidth: "100%" }} type="text"></textarea>
+                    </div>
+
+                    <div style={{ width: "100%" }}>
+                        <div>Set Access Amount for your research(MCT)</div>
                         <input style={{ height: 30, width: "100%" }} type="number"></input>
                     </div>
 
                     <div style={{ width: "100%" }}>
-                        <div>Upload your paper</div>
+                        <div>Upload your research</div>
                         <input style={{ height: 30, width: "100%" }} type="file"></input>
                     </div>
 
@@ -37,9 +46,9 @@ export default function Publish() {
 
                 <div className={styles.comments}>
                     <div style={{ width: "100%" }}>
-                        <div style={{ display: "flex", justifyContent: "center" }}>AI verification of your pdf</div>
+                        <div style={{ display: "flex", justifyContent: "center" }}>AI Summary for your research</div>
                     </div>
-                    <textarea readOnly style={{ padding: "10px", maxHeight: "70vh", margin: "0 30px", height: "100%", width: "100%" }}>hello</textarea>
+                    <textarea style={{ padding: "10px", maxHeight: "70vh", margin: "0 30px", height: "100%", width: "100%" }}>hello</textarea>
                 </div>
             </div>
         </>

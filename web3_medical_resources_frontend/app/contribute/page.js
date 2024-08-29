@@ -17,14 +17,6 @@ export default function Contribution() {
                         <div>Keywords</div>
                         <input style={{ height: 30, width: "100%" }} type="text"></input>
                     </div>
-                    <div style={{ width: "100%" }}>
-                        <div>Word Limit</div>
-                        <input style={{ height: 30, width: "100%" }} type="number"></input>
-                    </div>
-                    <div style={{ width: "100%" }}>
-                        <div>Additional Parameters for Contributor</div>
-                        <textarea style={{ height: 30, width: "100%" }} type="text"></textarea>
-                    </div>
 
                     <div style={{ width: "100%" }}>
                         <div>Stake Amount (MCT)</div>
@@ -32,7 +24,7 @@ export default function Contribution() {
                     </div>
 
                     <div style={{ width: "100%" }}>
-                        <div>Upload your research</div>
+                        <div>Upload your contribution</div>
                         <input style={{ height: 30, width: "100%" }} type="file"></input>
                     </div>
 

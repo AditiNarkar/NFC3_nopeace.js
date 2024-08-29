@@ -81,7 +81,7 @@
   padding: 50px 10px;
 }
 
-.contributionFormParent{
+.contributionFormParent {
   display: grid;
   grid-template-columns: 60% 40%;
   padding: 0 150px;
@@ -89,6 +89,7 @@
 .contributionForm {
   display: flex;
   flex-direction: column;
- 
+
   gap: 20px;
+  /* background-color: #f0f8ff5c; */
 }
