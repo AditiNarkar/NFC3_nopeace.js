@@ -15,12 +15,12 @@ export default function Publish() {
                         <input style={{ height: 30, width: "100%" }} type="text"></input>
                     </div>
                     <div style={{ width: "100%" }}>
-                        <div>Keywords</div>
+                        <div>Tags/Keywords</div>
                         <input style={{ height: 30, width: "100%" }} type="text"></input>
                     </div>
 
                     <div style={{ width: "100%" }}>
-                        <div>Word Limit</div>
+                        <div>Set Contributing Word Limit</div>
                         <input style={{ height: 30, width: "100%" }} type="number"></input>
                     </div>
                     <div style={{ width: "100%" }}>
@@ -29,7 +29,7 @@ export default function Publish() {
                     </div>
 
                     <div style={{ width: "100%" }}>
-                        <div>Set Access Amount for your research(MCT)</div>
+                        <div> Access Amount for your research(MCT)</div>
                         <input style={{ height: 30, width: "100%" }} type="number"></input>
                     </div>
 
