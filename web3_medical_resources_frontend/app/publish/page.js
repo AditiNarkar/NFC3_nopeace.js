@@ -11,10 +11,6 @@ export default function Publish() {
                         <input style={{ height: 30, width: "100%" }} type="text"></input>
                     </div>
                     <div style={{ width: "100%" }}>
-                        <div>Authors</div>
-                        <input style={{ height: 30, width: "100%" }} type="text"></input>
-                    </div>
-                    <div style={{ width: "100%" }}>
                         <div>Tags/Keywords</div>
                         <input style={{ height: 30, width: "100%" }} type="text"></input>
                     </div>
