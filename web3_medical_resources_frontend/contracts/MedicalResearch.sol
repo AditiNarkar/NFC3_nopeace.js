@@ -1,10 +1,11 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+
 // import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract MedicalResearch  {
-    
+contract MedicalResearch {
     // ERC20 token used for payments and staking
     ERC20 public token;
 
@@ -39,9 +40,28 @@ contract MedicalResearch  {
     mapping(address => uint256) public userContributionCount; // Mapping from user address to number of contributions made
 
     // Events to log actions in the contract
-    event PaperUploaded(uint256 paperId, address indexed author, string title, string contentHash, uint256 accessFee, string[] keywords);
-    event ContributionSubmitted(uint256 paperId, uint256 contributionIndex, address indexed contributor, string changesHash, uint256 stakeAmount);
-    event ContributionApproved(uint256 oldPaperId, uint256 newPaperId, uint256 contributionIndex, address indexed contributor, uint256 rewardAmount);
+    event PaperUploaded(
+        uint256 paperId,
+        address indexed author,
+        string title,
+        string contentHash,
+        uint256 accessFee,
+        string[] keywords
+    );
+    event ContributionSubmitted(
+        uint256 paperId,
+        uint256 contributionIndex,
+        address indexed contributor,
+        string changesHash,
+        uint256 stakeAmount
+    );
+    event ContributionApproved(
+        uint256 oldPaperId,
+        uint256 newPaperId,
+        uint256 contributionIndex,
+        address indexed contributor,
+        uint256 rewardAmount
+    );
     event PaperAccessed(uint256 paperId, address indexed user, uint256 feePaid);
     event PaperUpdated(uint256 newPaperId, string newContentHash); // Event for new paper update
 
@@ -53,7 +73,12 @@ contract MedicalResearch  {
     }
 
     // Function to upload a new paper
-    function uploadPaper(string memory title, string memory contentHash, uint256 accessFee, string[] memory keywords) external {
+    function uploadPaper(
+        string memory title,
+        string memory contentHash,
+        uint256 accessFee,
+        string[] memory keywords
+    ) external {
         uint256 paperId = nextPaperId;
         nextPaperId++; // Increment the paper ID counter
 
@@ -69,17 +94,36 @@ contract MedicalResearch  {
 
         papersByOwner[msg.sender].push(paperId); // Add the paper ID to the list of papers owned by the author
 
-        emit PaperUploaded(paperId, msg.sender, title, contentHash, accessFee, keywords);
+        emit PaperUploaded(
+            paperId,
+            msg.sender,
+            title,
+            contentHash,
+            accessFee,
+            keywords
+        );
     }
 
     // Function to access a paper by paying the access fee
     function accessPaper(uint256 paperId) external {
         require(papers[paperId].exists, "Paper does not exist");
-        require(!paperAccessed[paperId][msg.sender], "User already has access to this paper");
+        require(
+            !paperAccessed[paperId][msg.sender],
+            "User already has access to this paper"
+        );
 
         if (papers[paperId].accessFee > 0) {
-            require(token.transferFrom(msg.sender, papers[paperId].author, papers[paperId].accessFee), "Token transfer failed");
-            paperAccessFees[paperId] = paperAccessFees[paperId] + papers[paperId].accessFee; // Add the fee to the total access fees
+            require(
+                token.transferFrom(
+                    msg.sender,
+                    papers[paperId].author,
+                    papers[paperId].accessFee
+                ),
+                "Token transfer failed"
+            );
+            paperAccessFees[paperId] =
+                paperAccessFees[paperId] +
+                papers[paperId].accessFee; // Add the fee to the total access fees
         }
 
         paperAccessed[paperId][msg.sender] = true; // Mark the paper as accessed by the user
@@ -88,37 +132,68 @@ contract MedicalResearch  {
     }
 
     // Function to submit a contribution to a paper
-    function submitContribution(uint256 paperId, string memory changesHash, uint256 stakeAmount) external {
+    function submitContribution(
+        uint256 paperId,
+        string memory changesHash,
+        uint256 stakeAmount
+    ) external {
         require(papers[paperId].exists, "Paper does not exist");
-        require(token.transferFrom(msg.sender, address(this), stakeAmount), "Token transfer failed");
+        require(
+            token.transferFrom(msg.sender, address(this), stakeAmount),
+            "Token transfer failed"
+        );
 
         uint256 contributionIndex = contributions[paperId].length; // Get the index for the new contribution
 
-        contributions[paperId].push(Contribution({
-            contributor: msg.sender,
-            changesHash: changesHash,
-            approved: false,
-            stakeAmount: stakeAmount
-        }));
+        contributions[paperId].push(
+            Contribution({
+                contributor: msg.sender,
+                changesHash: changesHash,
+                approved: false,
+                stakeAmount: stakeAmount
+            })
+        );
 
         userContributionCount[msg.sender]++; // Increment the contribution count for the user
 
-        emit ContributionSubmitted(paperId, contributionIndex, msg.sender, changesHash, stakeAmount);
+        emit ContributionSubmitted(
+            paperId,
+            contributionIndex,
+            msg.sender,
+            changesHash,
+            stakeAmount
+        );
     }
 
     // Function to approve a contribution to a paper
-    function approveContribution(uint256 paperId, uint256 contributionIndex) external {
+    function approveContribution(
+        uint256 paperId,
+        uint256 contributionIndex
+    ) external {
         require(papers[paperId].exists, "Paper does not exist");
-        require(msg.sender == papers[paperId].author, "Only the author can approve contributions");
-        require(contributionIndex < contributions[paperId].length, "Invalid contribution index");
-        require(!contributions[paperId][contributionIndex].approved, "Contribution already approved");
-
-        Contribution storage contribution = contributions[paperId][contributionIndex];
-        uint256 rewardAmount = contribution.stakeAmount + (
-            paperAccessFees[paperId] * 10 / 100 // Reward includes 10% of the access fees earned by the paper
+        require(
+            msg.sender == papers[paperId].author,
+            "Only the author can approve contributions"
+        );
+        require(
+            contributionIndex < contributions[paperId].length,
+            "Invalid contribution index"
+        );
+        require(
+            !contributions[paperId][contributionIndex].approved,
+            "Contribution already approved"
         );
 
-        require(token.transfer(contribution.contributor, rewardAmount), "Token transfer failed");
+        Contribution storage contribution = contributions[paperId][
+            contributionIndex
+        ];
+        uint256 rewardAmount = contribution.stakeAmount +
+            ((paperAccessFees[paperId] * 10) / 100); // Reward includes 10% of the access fees earned by the paper
+
+        require(
+            token.transfer(contribution.contributor, rewardAmount),
+            "Token transfer failed"
+        );
 
         // Create a new paper with the updated content
         uint256 newPaperId = nextPaperId;
@@ -139,7 +214,13 @@ contract MedicalResearch  {
         contribution.approved = true; // Mark the contribution as approved
         paperAccessed[newPaperId][papers[paperId].author] = true;
 
-        emit ContributionApproved(paperId, newPaperId, contributionIndex, contribution.contributor, rewardAmount);
+        emit ContributionApproved(
+            paperId,
+            newPaperId,
+            contributionIndex,
+            contribution.contributor,
+            rewardAmount
+        );
         emit PaperUpdated(newPaperId, contribution.changesHash); // Emit event for new paper
     }
 
@@ -153,7 +234,9 @@ contract MedicalResearch  {
     }
 
     // Function to get a list of papers owned by a specific address
-    function getPapersByOwnerAddress(address owner) external view returns (Paper[] memory) {
+    function getPapersByOwnerAddress(
+        address owner
+    ) external view returns (Paper[] memory) {
         uint256[] memory paperIds = papersByOwner[owner];
         Paper[] memory ownerPapers = new Paper[](paperIds.length);
         for (uint256 i = 0; i < paperIds.length; i++) {
@@ -163,12 +246,16 @@ contract MedicalResearch  {
     }
 
     // Function to get a list of contributions for a specific paper
-    function getContributions(uint256 paperId) external view returns (Contribution[] memory) {
+    function getContributions(
+        uint256 paperId
+    ) external view returns (Contribution[] memory) {
         return contributions[paperId];
     }
 
     // Function to get a list of papers accessed by a specific user
-    function getPapersAccessedByUser(address user) external view returns (Paper[] memory) {
+    function getPapersAccessedByUser(
+        address user
+    ) external view returns (Paper[] memory) {
         uint256[] memory paperIds = new uint256[](nextPaperId - 1);
         uint256 count = 0;
 
@@ -188,18 +275,26 @@ contract MedicalResearch  {
     }
 
     // Function to get the number of contributions made by a specific user
-    function getUserContributionCount(address user) external view returns (uint256) {
+    function getUserContributionCount(
+        address user
+    ) external view returns (uint256) {
         return userContributionCount[user];
     }
-    
+
     // Function to get paper details by paper ID
-    function getPaperById(uint256 paperId) external view returns (
-        address author,
-        string memory title,
-        string memory contentHash,
-        uint256 accessFee,
-        string[] memory keywords
-    ) {
+    function getPaperById(
+        uint256 paperId
+    )
+        external
+        view
+        returns (
+            address author,
+            string memory title,
+            string memory contentHash,
+            uint256 accessFee,
+            string[] memory keywords
+        )
+    {
         require(papers[paperId].exists, "Paper does not exist");
 
         Paper storage paper = papers[paperId];
@@ -213,13 +308,19 @@ contract MedicalResearch  {
     }
 
     // Function to get the original paper details (the root paper)
-    function getOriginalPaper(uint256 paperId) external view returns (
-        address author,
-        string memory title,
-        string memory contentHash,
-        uint256 accessFee,
-        string[] memory keywords
-    ) {
+    function getOriginalPaper(
+        uint256 paperId
+    )
+        external
+        view
+        returns (
+            address author,
+            string memory title,
+            string memory contentHash,
+            uint256 accessFee,
+            string[] memory keywords
+        )
+    {
         require(papers[paperId].exists, "Paper does not exist");
 
         uint256 currentId = paperId;
@@ -237,4 +338,3 @@ contract MedicalResearch  {
         );
     }
 }
-
