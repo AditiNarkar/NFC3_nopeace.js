@@ -1,30 +1,29 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from 'next/navigation';
 import styles from "../styles.module.css";
 import axios from 'axios';
-import { uploadPaper, getPapers } from "@/utils/queries";
+import { uploadPaper } from "@/utils/queries";
 
 export default function Publish() {
-    const [file, setFile] = useState("");
+    const router = useRouter()
+    const [file, setFile] = useState(null);
     const [title, setTitle] = useState("");
     const [tags, setTags] = useState([]);
     const [wordLimit, setWordLimit] = useState(0);
     const [additionalParams, setAdditionalParams] = useState("");
     const [accessAmount, setAccessAmount] = useState(0);
     const [contentHash, setContentHash] = useState("");
-    //QmYsQ3ocf3XYqTsvJDSticUEyip7TiXH7oamfJ1kdaNvDV
-    async function publishResearch(e) {
-        e.preventDefault();
-        const response = await uploadPaper(title, contentHash, accessAmount, tags)
-        console.log(response)
-
-        const papers = await getPapers()
-        console.log(papers)
-
-    }
+    const [uploading, setUploading] = useState(false);
+    const [submitMessage, setSubmitMessage] = useState("");
 
     const handlePinata = async (e) => {
         e.preventDefault();
+        if (!file) {
+            console.error("No file selected.");
+            return;
+        }
+        setUploading(true);
         try {
             const fileData = new FormData();
             fileData.append('file', file);
@@ -41,10 +40,37 @@ export default function Publish() {
             const fileUrl = `https://gateway.pinata.cloud/ipfs/${responseData.data.IpfsHash}`;
             console.log('File uploaded successfully:', fileUrl);
             setContentHash(responseData.data.IpfsHash);
+            setSubmitMessage("File uploaded successfully.");
         } catch (error) {
             console.error('Error uploading file:', error);
+            setSubmitMessage("Error uploading file.");
+        } finally {
+            setUploading(false);
         }
     };
+
+    async function publishResearch(e) {
+        e.preventDefault();
+        if (!title || !contentHash || accessAmount <= 0) {
+            setSubmitMessage("Please fill in all required fields.");
+            return;
+        }
+
+        try {
+            const response = await uploadPaper(title, contentHash, accessAmount, tags);
+            console.log(response)
+            if (response.success) {
+                setSubmitMessage("Research published successfully.");
+                router.push("/")
+                // Optionally, reset the form or redirect the user
+            } else {
+                setSubmitMessage(`Error publishing research: ${response.errorMessage}`);
+            }
+        } catch (error) {
+            console.error('Error publishing research:', error);
+            setSubmitMessage("Error publishing research.");
+        }
+    }
 
     return (
         <>
@@ -70,18 +96,18 @@ export default function Publish() {
                     <div style={{ width: "100%" }}>
                         <div>Set Contributing Word Limit</div>
                         <input style={{ height: 30, width: "100%" }} type="number" value={wordLimit}
-                            onChange={(e) => setWordLimit(e.target.value)} />
+                            onChange={(e) => setWordLimit(Number(e.target.value))} />
                     </div>
                     <div style={{ width: "100%" }}>
                         <div>Additional Parameters for Contributor</div>
-                        <textarea style={{ height: 30, maxWidth: "100%", minWidth: "100%" }} type="text" value={additionalParams}
+                        <textarea style={{ height: 100, maxWidth: "100%", minWidth: "100%" }} type="text" value={additionalParams}
                             onChange={(e) => setAdditionalParams(e.target.value)} />
                     </div>
 
                     <div style={{ width: "100%" }}>
                         <div>Access Amount for your research (MCT)</div>
                         <input style={{ height: 30, width: "100%" }} type="number" value={accessAmount}
-                            onChange={(e) => setAccessAmount(e.target.value)} />
+                            onChange={(e) => setAccessAmount(Number(e.target.value))} />
                     </div>
 
                     <div style={{ width: "100%" }}>
@@ -94,9 +120,10 @@ export default function Publish() {
                         <button
                             style={{ width: "100%", border: "1px solid white" }}
                             className={styles.ConnectButton}
-                            onClick={handlePinata}  // Corrected usage
+                            onClick={handlePinata}
+                            disabled={uploading}
                         >
-                            Upload to IPFS
+                            {uploading ? "Uploading..." : "Upload to IPFS"}
                         </button>
                     </div>
 
@@ -109,6 +136,8 @@ export default function Publish() {
                             Submit
                         </button>
                     </div>
+
+                    {submitMessage && <div style={{ marginTop: "20px", color: "green" }}>{submitMessage}</div>}
                 </div>
 
                 <div className={styles.comments}>
@@ -119,6 +148,7 @@ export default function Publish() {
                     </div>
                     <textarea
                         style={{ padding: "10px", maxHeight: "70vh", margin: "0 30px", height: "100%", width: "100%" }}
+                        readOnly
                     >
                         hello
                     </textarea>

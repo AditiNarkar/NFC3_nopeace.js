@@ -3,8 +3,6 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-// import "@openzeppelin/contracts/access/Ownable.sol";
-
 contract MedicalResearch {
     // ERC20 token used for payments and staking
     ERC20 public token;
@@ -30,14 +28,17 @@ contract MedicalResearch {
 
     uint256 private nextPaperId; // Counter for generating new paper IDs
     uint256 private nextContributionIndex; // Counter for generating new contribution indices
+    uint private totalPaperCount;
 
     // Mappings to store papers, contributions, access fees, and other data
     mapping(uint256 => Paper) public papers; // Mapping from paper ID to Paper struct
-    mapping(uint256 => Contribution[]) public contributions; // Mapping from paper ID to an array of Contribution structs
+    mapping(uint256 => mapping(uint256 => Contribution)) public contributions; // Mapping from paper ID to a mapping of contribution indices to Contribution structs
+    mapping(uint256 => uint256) public paperContributionCount; // Mapping from paper ID to the number of contributions it has received
     mapping(uint256 => uint256) public paperAccessFees; // Mapping from paper ID to total access fees earned
-    mapping(address => uint256[]) private papersByOwner; // Mapping from owner address to an array of paper IDs owned
-    mapping(uint256 => mapping(address => bool)) public paperAccessed; // Mapping from paper ID to a mapping of user addresses to access status
+    mapping(address => mapping(uint256 => bool)) public paperAccessed; // Mapping from user address to paper ID to access status
     mapping(address => uint256) public userContributionCount; // Mapping from user address to number of contributions made
+    mapping(address => mapping(uint256 => uint256)) public ownerPapers; // Mapping from owner address to an index-to-paperId mapping
+    mapping(address => uint256) public ownerPaperCount; // Mapping from owner address to the number of papers they own
 
     // Events to log actions in the contract
     event PaperUploaded(
@@ -70,6 +71,7 @@ contract MedicalResearch {
         token = ERC20(_tokenAddress);
         nextPaperId = 1; // Start paper IDs from 1
         nextContributionIndex = 0; // Start contribution indices from 0
+        totalPaperCount = 0;
     }
 
     // Function to upload a new paper
@@ -92,7 +94,10 @@ contract MedicalResearch {
             parentPaperId: 0 // No parent for original papers
         });
 
-        papersByOwner[msg.sender].push(paperId); // Add the paper ID to the list of papers owned by the author
+        ownerPapers[msg.sender][ownerPaperCount[msg.sender]] = paperId;
+        ownerPaperCount[msg.sender]++; // Increment the count of papers owned by the author
+        totalPaperCount++;
+        paperAccessed[msg.sender][paperId] = true;
 
         emit PaperUploaded(
             paperId,
@@ -108,7 +113,7 @@ contract MedicalResearch {
     function accessPaper(uint256 paperId) external {
         require(papers[paperId].exists, "Paper does not exist");
         require(
-            !paperAccessed[paperId][msg.sender],
+            !paperAccessed[msg.sender][paperId],
             "User already has access to this paper"
         );
 
@@ -121,12 +126,10 @@ contract MedicalResearch {
                 ),
                 "Token transfer failed"
             );
-            paperAccessFees[paperId] =
-                paperAccessFees[paperId] +
-                papers[paperId].accessFee; // Add the fee to the total access fees
+            paperAccessFees[paperId] += papers[paperId].accessFee; // Add the fee to the total access fees
         }
 
-        paperAccessed[paperId][msg.sender] = true; // Mark the paper as accessed by the user
+        paperAccessed[msg.sender][paperId] = true; // Mark the paper as accessed by the user
 
         emit PaperAccessed(paperId, msg.sender, papers[paperId].accessFee);
     }
@@ -143,16 +146,15 @@ contract MedicalResearch {
             "Token transfer failed"
         );
 
-        uint256 contributionIndex = contributions[paperId].length; // Get the index for the new contribution
+        uint256 contributionIndex = paperContributionCount[paperId]; // Get the index for the new contribution
+        paperContributionCount[paperId]++; // Increment the contribution count for the paper
 
-        contributions[paperId].push(
-            Contribution({
-                contributor: msg.sender,
-                changesHash: changesHash,
-                approved: false,
-                stakeAmount: stakeAmount
-            })
-        );
+        contributions[paperId][contributionIndex] = Contribution({
+            contributor: msg.sender,
+            changesHash: changesHash,
+            approved: false,
+            stakeAmount: stakeAmount
+        });
 
         userContributionCount[msg.sender]++; // Increment the contribution count for the user
 
@@ -176,7 +178,7 @@ contract MedicalResearch {
             "Only the author can approve contributions"
         );
         require(
-            contributionIndex < contributions[paperId].length,
+            contributionIndex < paperContributionCount[paperId],
             "Invalid contribution index"
         );
         require(
@@ -209,10 +211,11 @@ contract MedicalResearch {
             parentPaperId: paperId // Reference to the original paper
         });
 
-        papersByOwner[msg.sender].push(newPaperId); // Add the new paper ID to the list of papers owned by the author
+        ownerPapers[msg.sender][ownerPaperCount[msg.sender]] = newPaperId;
+        ownerPaperCount[msg.sender]++; // Increment the count of papers owned by the author
 
         contribution.approved = true; // Mark the contribution as approved
-        paperAccessed[newPaperId][papers[paperId].author] = true;
+        paperAccessed[msg.sender][newPaperId] = true;
 
         emit ContributionApproved(
             paperId,
@@ -224,61 +227,27 @@ contract MedicalResearch {
         emit PaperUpdated(newPaperId, contribution.changesHash); // Emit event for new paper
     }
 
-    // Function to get a list of all papers
-    function getPapers() external view returns (Paper[] memory) {
-        Paper[] memory allPapers = new Paper[](nextPaperId - 1);
-        for (uint256 i = 1; i < nextPaperId; i++) {
-            allPapers[i - 1] = papers[i];
-        }
-        return allPapers;
+    // Function to get the total count of papers owned by an address
+    function getOwnerPaperCount(address owner) external view returns (uint256) {
+        return ownerPaperCount[owner];
     }
 
-    // Function to get a list of papers owned by a specific address
-    function getPapersByOwnerAddress(
-        address owner
-    ) external view returns (Paper[] memory) {
-        uint256[] memory paperIds = papersByOwner[owner];
-        Paper[] memory ownerPapers = new Paper[](paperIds.length);
-        for (uint256 i = 0; i < paperIds.length; i++) {
-            ownerPapers[i] = papers[paperIds[i]];
-        }
-        return ownerPapers;
-    }
-
-    // Function to get a list of contributions for a specific paper
-    function getContributions(
-        uint256 paperId
-    ) external view returns (Contribution[] memory) {
-        return contributions[paperId];
-    }
-
-    // Function to get a list of papers accessed by a specific user
-    function getPapersAccessedByUser(
-        address user
-    ) external view returns (Paper[] memory) {
-        uint256[] memory paperIds = new uint256[](nextPaperId - 1);
-        uint256 count = 0;
-
-        for (uint256 i = 1; i < nextPaperId; i++) {
-            if (paperAccessed[i][user]) {
-                paperIds[count] = i;
-                count++;
-            }
-        }
-
-        Paper[] memory accessedPapers = new Paper[](count);
-        for (uint256 i = 0; i < count; i++) {
-            accessedPapers[i] = papers[paperIds[i]];
-        }
-
-        return accessedPapers;
-    }
-
-    // Function to get the number of contributions made by a specific user
-    function getUserContributionCount(
-        address user
+    // Function to get the paper ID owned by an address at a specific index
+    function getPaperIdByOwnerAndIndex(
+        address owner,
+        uint256 index
     ) external view returns (uint256) {
-        return userContributionCount[user];
+        require(index < ownerPaperCount[owner], "Index out of bounds");
+        return ownerPapers[owner][index];
+    }
+
+    // Function to get the contribution details by paper ID and contribution index
+    function getContributionByIndex(
+        uint256 paperId,
+        uint256 index
+    ) external view returns (Contribution memory) {
+        require(index < paperContributionCount[paperId], "Index out of bounds");
+        return contributions[paperId][index];
     }
 
     // Function to get paper details by paper ID
@@ -292,49 +261,55 @@ contract MedicalResearch {
             string memory title,
             string memory contentHash,
             uint256 accessFee,
-            string[] memory keywords
+            string[] memory keywords,
+            uint256 parentPaperId
         )
     {
         require(papers[paperId].exists, "Paper does not exist");
-
-        Paper storage paper = papers[paperId];
+        Paper memory paper = papers[paperId];
         return (
             paper.author,
             paper.title,
             paper.contentHash,
             paper.accessFee,
-            paper.keywords
+            paper.keywords,
+            paper.parentPaperId
         );
     }
 
-    // Function to get the original paper details (the root paper)
-    function getOriginalPaper(
-        uint256 paperId
-    )
-        external
-        view
-        returns (
-            address author,
-            string memory title,
-            string memory contentHash,
-            uint256 accessFee,
-            string[] memory keywords
-        )
-    {
-        require(papers[paperId].exists, "Paper does not exist");
+    // Function to get the total count of papers in the contract
+    function getTotalPaperCount() external view returns (uint256) {
+        return totalPaperCount;
+    }
 
-        uint256 currentId = paperId;
-        while (papers[currentId].parentPaperId != 0) {
-            currentId = papers[currentId].parentPaperId; // Traverse up the chain to find the original paper
+    function getAccessibillity(
+        address s,
+        uint paperId
+    ) public view returns (bool) {
+        return paperAccessed[s][paperId];
+    }
+
+    // Function to get the list of paper IDs accessed by a user
+    function getPapersAccessedByUser(
+        address user
+    ) external view returns (uint256[] memory) {
+        uint256 paperCount = 0;
+        // Calculate the number of papers accessed by the user
+        for (uint256 i = 1; i <= nextPaperId; i++) {
+            if (paperAccessed[user][i]) {
+                paperCount++;
+            }
         }
 
-        Paper storage originalPaper = papers[currentId];
-        return (
-            originalPaper.author,
-            originalPaper.title,
-            originalPaper.contentHash,
-            originalPaper.accessFee,
-            originalPaper.keywords
-        );
+        uint256[] memory accessedPapers = new uint256[](paperCount);
+        uint256 index = 0;
+        // Collect the paper IDs
+        for (uint256 i = 1; i <= nextPaperId; i++) {
+            if (paperAccessed[user][i]) {
+                accessedPapers[index] = i;
+                index++;
+            }
+        }
+        return accessedPapers;
     }
 }

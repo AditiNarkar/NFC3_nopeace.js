@@ -271,8 +271,8 @@
       ]
     },
     "/Users/bigfatrat/Desktop/ADT/NFC3_nopeace/web3_medical_resources_frontend/contracts/MedicalResearch.sol": {
-      "lastModificationDate": 1724949053812,
-      "contentHash": "a39a7c7ae41126642bf9cfbfca14436e",
+      "lastModificationDate": 1724983775935,
+      "contentHash": "e871865200ad588ca81fb25f228bcee9",
       "sourceName": "contracts/MedicalResearch.sol",
       "solcConfig": {
         "version": "0.8.24",
@@ -314,6 +314,45 @@
       "artifacts": [
         "MedicalResearch"
       ]
+    },
+    "/Users/bigfatrat/Desktop/ADT/NFC3_nopeace/web3_medical_resources_frontend/contracts/oldMedicalResearch.sol": {
+      "lastModificationDate": 1724975388663,
+      "contentHash": "90593296584811fecf1ebbd9a74bf76e",
+      "sourceName": "contracts/oldMedicalResearch.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [],
+      "artifacts": []
     }
   }
 }
