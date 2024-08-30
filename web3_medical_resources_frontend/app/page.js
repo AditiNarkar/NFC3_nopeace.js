@@ -41,9 +41,16 @@ export default function Home() {
         {papers.length > 0 ? (
           papers.map((paper, i) => {
             const [author, title, contentHash, accessFee, keywords] = paper;
+            const fileUrl = `https://gateway.pinata.cloud/ipfs/${contentHash}`;
             return (
               <div key={i} className={styles.paperDetails}>
-                <Image src={paper} width={310} height={200} alt={`Paper ${i + 1}`}></Image>
+                <iframe
+                  src={fileUrl}
+                  width={310}
+                  height={200}
+                  style={{ border: 'none' }}
+                  title="Preview"
+                ></iframe>
                 <div
                   style={{
                     display: "flex",

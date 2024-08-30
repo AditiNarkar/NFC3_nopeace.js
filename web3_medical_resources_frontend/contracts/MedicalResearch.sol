@@ -117,21 +117,18 @@ contract MedicalResearch {
             "User already has access to this paper"
         );
 
-        if (papers[paperId].accessFee > 0) {
-            require(
-                token.transferFrom(
-                    msg.sender,
-                    papers[paperId].author,
-                    papers[paperId].accessFee
-                ),
-                "Token transfer failed"
-            );
+        bool success = token.transferFrom(
+            msg.sender,
+            papers[paperId].author,
+            papers[paperId].accessFee
+        );
+        if (success) {
             paperAccessFees[paperId] += papers[paperId].accessFee; // Add the fee to the total access fees
+
+            paperAccessed[msg.sender][paperId] = true; // Mark the paper as accessed by the user
+
+            emit PaperAccessed(paperId, msg.sender, papers[paperId].accessFee);
         }
-
-        paperAccessed[msg.sender][paperId] = true; // Mark the paper as accessed by the user
-
-        emit PaperAccessed(paperId, msg.sender, papers[paperId].accessFee);
     }
 
     // Function to submit a contribution to a paper
