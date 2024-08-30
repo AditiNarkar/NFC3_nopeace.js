@@ -17,7 +17,7 @@ export default function Header() {
           <div>Contact</div>
         </div>
         <div className={styles.HeaderChild2}>
-          <span> wallet address</span>
+          <span> {ready ? wallets[0]?.address : "0x0"}</span>
           {authenticated ? (
             <button className={styles.ConnectButton} onClick={logout}>
               Disconnect

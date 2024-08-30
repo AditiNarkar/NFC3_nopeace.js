@@ -1,4 +1,3 @@
-"use client"
 import { getContract } from "./index";
 import { ethers } from "ethers"
 
@@ -7,10 +6,15 @@ const parseErrorMsg = (e) => {
   return json?.reason || json?.error?.msg;
 };
 
+const provider = new ethers.BrowserProvider("https://sepolia.infura.io/v3/");
+let signer = await provider.getSigner();
+
 let contractObject
 const initContract = async () => {
-  console.log("contractObject:", contractObject)
+
   if (!contractObject) {
+    console.log("different signers")
+    console.log(contractObject)
     try {
       contractObject = await getContract();
       const { tokenContractReader, medicalContractReader } = contractObject;
@@ -31,7 +35,6 @@ const initContract = async () => {
       return {
         success: false,
         errorMessage: parseErrorMsg(error),
-
       }
     }
   }
@@ -110,6 +113,7 @@ export async function uploadPaper(title, contentHash, accessFee, keywords) {
 export async function accessPaper(address, paperId) {
   try {
     const { tokenContractReader, medicalContractReader } = await initContract();
+    console.log("medicalContractReader:", medicalContractReader)
     const contract = medicalContractReader;
     if (!contract) {
       console.log("Contract is not initialized");
@@ -123,14 +127,18 @@ export async function accessPaper(address, paperId) {
       console.log(`Approved ${ethers.formatEther(AMT)} MCT.`);
     }
 
+    contract.on("PaperAccessed", (paperId, user, feesPaid) => {
+      console.log("Paper accessed successfully");
+      return {
+        success: true,
+        data: txreceipt
+      };
+    })
+
     const tx = await contract.accessPaper(paperId);
     const txreceipt = await tx.wait();
 
-    console.log("Paper accessed successfully");
-    return {
-      success: true,
-      data: txreceipt
-    };
+
   }
   catch (error) {
     console.error("Error accessing paper:", error);

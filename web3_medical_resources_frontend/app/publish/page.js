@@ -6,8 +6,8 @@ import axios from 'axios';
 import { uploadPaper } from "@/utils/queries";
 
 export default function Publish() {
-    const router = useRouter()
-    const [file, setFile] = useState(null);
+    const router = useRouter();
+    const [file, setFile] = useState(null);``
     const [title, setTitle] = useState("");
     const [tags, setTags] = useState([]);
     const [wordLimit, setWordLimit] = useState(0);
@@ -16,9 +16,42 @@ export default function Publish() {
     const [contentHash, setContentHash] = useState("");
     const [uploading, setUploading] = useState(false);
     const [submitMessage, setSubmitMessage] = useState("");
+    const [base64Encoded, setBase64Encoded] = useState("");
+    const [aiSummary, setAiSummary] = useState(""); // State for AI summary
 
-    const handlePinata = async (e) => {
+    // Composite handler function
+    const handleButtonClick = async (e) => {
         e.preventDefault();
+        if (file) {
+            await convertToBase64();
+            await handlePinata();
+        }
+    };
+
+    const convertToBase64 = () => {
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+            const base64String = reader.result.split(',')[1];
+            setBase64Encoded(base64String);
+            console.log('Base64 Encoded String:', base64String);
+
+            // Send the base64 string to the summarization API
+            try {
+                const response = await axios.post('http://127.0.0.1:5000/api/summarize', {
+                    pdf: base64String
+                });
+                setAiSummary(response.data.summary || "No summary available.");
+                console.log('AI Summary:', response.data.summary);
+            } catch (error) {
+                console.error('Error fetching AI summary:', error);
+                setAiSummary("Error fetching AI summary.");
+            }
+        };
+        reader.readAsDataURL(file);
+    };
+
+    const handlePinata = async () => {
         if (!file) {
             console.error("No file selected.");
             return;
@@ -58,11 +91,10 @@ export default function Publish() {
 
         try {
             const response = await uploadPaper(title, contentHash, accessAmount, tags);
-            console.log(response)
+            console.log(response);
             if (response.success) {
                 setSubmitMessage("Research published successfully.");
-                router.push("/")
-                // Optionally, reset the form or redirect the user
+                router.push("/");
             } else {
                 setSubmitMessage(`Error publishing research: ${response.errorMessage}`);
             }
@@ -120,7 +152,7 @@ export default function Publish() {
                         <button
                             style={{ width: "100%", border: "1px solid white" }}
                             className={styles.ConnectButton}
-                            onClick={handlePinata}
+                            onClick={handleButtonClick}
                             disabled={uploading}
                         >
                             {uploading ? "Uploading..." : "Upload to IPFS"}
@@ -149,9 +181,8 @@ export default function Publish() {
                     <textarea
                         style={{ padding: "10px", maxHeight: "70vh", margin: "0 30px", height: "100%", width: "100%" }}
                         readOnly
-                    >
-                        hello
-                    </textarea>
+                        value={aiSummary} // Display the AI summary here
+                    />
                 </div>
             </div>
         </>

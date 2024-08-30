@@ -30,4 +30,4 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     await verify(MedicalResearch.address, args);
   }
 };
-module.exports.tags = ["all", "MedicalResearch"];
+module.exports.tags = ["all", "Medic  alResearch"];

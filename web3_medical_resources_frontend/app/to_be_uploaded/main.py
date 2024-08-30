@@ -10,13 +10,28 @@ import requests
 from bs4 import BeautifulSoup as bs
 import warnings
 from flask_cors import CORS
+import nltk
+
+from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, 
+     methods=["GET", "POST"], 
+     allow_headers=["Content-Type"])
+
 
 warnings.filterwarnings("ignore", module='bs4')
 
+nltk.download('punkt')
+nltk.download('punkt_tab')
 
+
+# Download required NLTK resources
+nltk.download('stopwords', quiet=True)
+nltk.download('punkt', quiet=True)
+nltk.download('averaged_perceptron_tagger', quiet=True)
+
+# The rest of your code...
 
 nltk.download('stopwords', quiet=True)
 nltk.download('punkt', quiet=True)

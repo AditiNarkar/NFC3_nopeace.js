@@ -67,8 +67,8 @@ export default function RootLayout({ children }) {
             embeddedWallets: {
               createOnLogin: "users-without-wallets",
             },
-            defaultChain: LocalNetwork,
-            supportedChains: [LocalNetwork],
+            defaultChain: Sepolia,
+            supportedChains: [Sepolia],
           }}
         >
           <Header />
