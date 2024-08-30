@@ -60,12 +60,9 @@ export default function Preview() {
             console.log("Paper or user address is not available.");
             return;
         }
-
         try {
 
-            const tx = await accessPaper(id);
-
-
+            const tx = await accessPaper(userAddress, id);
 
             console.log("Access granted, transaction confirmed:", tx.hash);
 

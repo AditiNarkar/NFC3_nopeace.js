@@ -271,8 +271,8 @@
       ]
     },
     "/Users/bigfatrat/Desktop/ADT/NFC3_nopeace/web3_medical_resources_frontend/contracts/MedicalResearch.sol": {
-      "lastModificationDate": 1724983775935,
-      "contentHash": "e871865200ad588ca81fb25f228bcee9",
+      "lastModificationDate": 1724987412567,
+      "contentHash": "d068df8ee64d503bd13a9735746d7824",
       "sourceName": "contracts/MedicalResearch.sol",
       "solcConfig": {
         "version": "0.8.24",

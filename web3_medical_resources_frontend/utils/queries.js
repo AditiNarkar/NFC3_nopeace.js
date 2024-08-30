@@ -1,5 +1,6 @@
 "use client"
 import { getContract } from "./index";
+import { ethers } from "ethers"
 
 const parseErrorMsg = (e) => {
   const json = JSON.parse(JSON.stringify(e));
@@ -8,17 +9,47 @@ const parseErrorMsg = (e) => {
 
 let contractObject
 const initContract = async () => {
+  console.log("contractObject:", contractObject)
   if (!contractObject) {
     try {
       contractObject = await getContract();
       const { tokenContractReader, medicalContractReader } = contractObject;
-      console.log(tokenContractReader, medicalContractReader);
-      return { tokenContractReader, medicalContractReader };
+      console.log("tokenContractReader",
+        tokenContractReader, "medicalContractReader", medicalContractReader);
+
+      const tx = await tokenContractReader.approve(medicalContractReader, ethers.parseEther("10000000"));
+      await tx.wait(1);
+      console.log("ApprovedContractToSpendToken")
+
+      return {
+        success: true,
+        tokenContractReader,
+        medicalContractReader
+      };
     } catch (error) {
       console.log("Error initializing contract:", error);
+      return {
+        success: false,
+        errorMessage: parseErrorMsg(error),
+
+      }
     }
   }
+  else {
+    const { tokenContractReader, medicalContractReader } = contractObject;
+    return { tokenContractReader, medicalContractReader }
+  }
 };
+
+
+
+async function requestTokens(address) {
+  const { TokenAddress, medicalContractReader } = await initContract();
+  await TokenAddress.transfer(address, ethers.parseEther("1000"));
+  return
+}
+
+
 
 export async function getPapersAccessedByUser(userAddress) {
   try {
@@ -50,7 +81,7 @@ export async function getPapersAccessedByUser(userAddress) {
 
 export async function uploadPaper(title, contentHash, accessFee, keywords) {
   try {
-    const { medicalContractReader } = await initContract();
+    const { tokenContractReader, medicalContractReader } = await initContract();
     const contract = medicalContractReader;
     if (!contract) {
       console.log("Contract is not initialized");
@@ -61,7 +92,7 @@ export async function uploadPaper(title, contentHash, accessFee, keywords) {
       accessFee,
       keywords
     );
-    const txreceipt = await tx.wait();
+    const txreceipt = await tx.wait(1);
     console.log("Paper uploaded successfully");
     return {
       success: true,
@@ -76,13 +107,25 @@ export async function uploadPaper(title, contentHash, accessFee, keywords) {
   }
 }
 
-export async function accessPaper(paperId) {
+export async function accessPaper(address, paperId) {
   try {
-    const { medicalContractReader } = await initContract();
+    const { tokenContractReader, medicalContractReader } = await initContract();
     const contract = medicalContractReader;
-    if (!contract) console.log("Contract is not initialized");
+    if (!contract) {
+      console.log("Contract is not initialized");
+      return
+    }
+
+    const AMT = 10;
+    const allowance = await tokenContractReader.allowance(address, medicalContractReader);
+    if (allowance < AMT) {
+      await tokenContractReader.connect(address).approve(medicalContractReader, AMT);
+      console.log(`Approved ${ethers.formatEther(AMT)} MCT.`);
+    }
+
     const tx = await contract.accessPaper(paperId);
     const txreceipt = await tx.wait();
+
     console.log("Paper accessed successfully");
     return {
       success: true,
