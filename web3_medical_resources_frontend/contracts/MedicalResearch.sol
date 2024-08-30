@@ -110,7 +110,7 @@ contract MedicalResearch {
     }
 
     // Function to access a paper by paying the access fee
-    function accessPaper(uint256 paperId) external {
+    function accessPaper(uint256 paperId) external payable {
         require(papers[paperId].exists, "Paper does not exist");
         require(
             !paperAccessed[msg.sender][paperId],

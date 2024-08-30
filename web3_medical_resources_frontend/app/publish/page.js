@@ -42,7 +42,7 @@ export default function Publish() {
             setContentHash(responseData.data.IpfsHash);
             setSubmitMessage("File uploaded successfully.");
         } catch (error) {
-            console.error('Error uploading file:', error);
+            console.log('Error uploading file:', error);
             setSubmitMessage("Error uploading file.");
         } finally {
             setUploading(false);
@@ -67,7 +67,7 @@ export default function Publish() {
                 setSubmitMessage(`Error publishing research: ${response.errorMessage}`);
             }
         } catch (error) {
-            console.error('Error publishing research:', error);
+            console.log('Error publishing research:', error);
             setSubmitMessage("Error publishing research.");
         }
     }

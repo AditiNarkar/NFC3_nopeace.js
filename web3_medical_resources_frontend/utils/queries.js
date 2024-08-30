@@ -68,7 +68,7 @@ export async function uploadPaper(title, contentHash, accessFee, keywords) {
       txreceipt: txreceipt
     }
   } catch (error) {
-    console.error("Error uploading paper:", error);
+    console.log("Error uploading paper:", error);
     return {
       success: false,
       errorMessage: parseErrorMsg(error),
@@ -82,9 +82,14 @@ export async function accessPaper(paperId) {
     const contract = medicalContractReader;
     if (!contract) console.log("Contract is not initialized");
     const tx = await contract.accessPaper(paperId);
-    await tx.wait();
+    const txreceipt = await tx.wait();
     console.log("Paper accessed successfully");
-  } catch (error) {
+    return {
+      success: true,
+      data: txreceipt
+    };
+  }
+  catch (error) {
     console.error("Error accessing paper:", error);
     return {
       success: false,
@@ -200,7 +205,7 @@ export async function getAccessibillity(address, paperId) {
   } catch (error) {
     return {
       success: false,
-      errorMessage: parseErrorMsg(error) || "Unknown Error", 
+      errorMessage: parseErrorMsg(error) || "Unknown Error",
     };
   }
 

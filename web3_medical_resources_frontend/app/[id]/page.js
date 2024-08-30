@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from 'next/navigation';
 import styles from "../styles.module.css";
 import Image from 'next/image';
-import { getPaperById, getAccessibillity } from "@/utils/queries";
+import { getPaperById, getAccessibillity, accessPaper } from "@/utils/queries";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 
 export default function Preview() {
@@ -13,6 +13,7 @@ export default function Preview() {
     const [userAddress, setUserAddress] = useState("");
     const { ready, authenticated } = usePrivy();
     const { wallets } = useWallets();
+
 
     useEffect(() => {
         async function fetchData() {
@@ -26,7 +27,7 @@ export default function Preview() {
                     // Fetch paper details by ID
                     const paperDetails = await getPaperById(id);
                     if (paperDetails && paperDetails.success) {
-                        console.log(paperDetails.data)
+                        console.log("state:", paperDetails.data)
                         setPaper(paperDetails.data); // Adjust based on actual response structure
                     } else {
                         console.log("Failed to fetch paper details:", paperDetails.errorMessage);
@@ -51,13 +52,42 @@ export default function Preview() {
         fetchData();
     }, [ready, authenticated, wallets]);
 
+
+
+
+    const handleGetAccess = async () => {
+        if (!paper || !userAddress) {
+            console.log("Paper or user address is not available.");
+            return;
+        }
+
+        try {
+
+            const tx = await accessPaper(id);
+
+
+
+            console.log("Access granted, transaction confirmed:", tx.hash);
+
+            setHaveAccess(true);
+
+        } catch (error) {
+            console.log("Error granting access:", error);
+        }
+    };
+
+
+
+
+
+
     // Use fallback values if paper is not available
-    const keywords = Array.isArray(paper?.keywords) ? paper.keywords : [];
-    const title = paper?.title || "No Title";
-    const author = paper?.author || "Unknown Author";
-    const postedBy = paper?.postedBy || "Unknown";
-    const accessFee = paper?.accessFee || "0";
-    const currentWinPrize = paper?.currentWinPrize || "0";
+    const keywords = Array.isArray(paper?.[4]) ? paper[4] : [];
+    const title = paper?.[1] || "No Title";
+    const author = paper?.[0] || "Unknown Author";
+    const postedBy = paper?.[2] || "Unknown";
+    const accessFee = paper?.[3] || "0";
+    // const currentWinPrize = paper?.currentWinPrize || "0";
 
     return (
         <>
@@ -76,15 +106,15 @@ export default function Preview() {
                         <div style={{ display: "flex", justifyContent: "center", fontWeight: 600 }}>{title}</div>
                         <div>Authors: {author}</div>
                         <div>Posted By: {postedBy}</div>
-                        <div>Keywords: {keywords.join(', ')}</div>
-                        <div>Access Fee: {accessFee} MCT</div>
+                        <div>Keywords: {keywords[0]}</div>
+                        <div>Access Fee: {accessFee.toString()} MCT</div>
                         {haveAccess ? (
                             <div>
-                                <div>Current Win Prize: {currentWinPrize} MCT</div>
+                                <div>Current Win Prize: 6 MCT</div>
                                 <button style={{ width: "100%" }} className={styles.ConnectButton}>Stake Contribution</button>
                             </div>
                         ) : (
-                            <button style={{ width: "100%" }} className={styles.ConnectButton}>Get Access</button>
+                            <button style={{ width: "100%" }} className={styles.ConnectButton} onClick={handleGetAccess}>Get Access</button>
                         )}
                     </div>
                 </div>
