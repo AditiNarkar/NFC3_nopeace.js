@@ -44,7 +44,7 @@ export default function Preview() {
                         console.log("Has access:", data);
                         setHaveAccess(data);
                     } else {
-                        console.log("Error:", data.message || "Unknown error");
+                        console.log("Error:", data || "Unknown error");
                     }
 
                 } catch (error) {
@@ -68,12 +68,16 @@ export default function Preview() {
         }
         try {
 
-            const tx = await accessPaper(userAddress, id);
+            const result = await accessPaper(userAddress, id, accessFee);
 
-            console.log("Access granted, transaction confirmed:", tx.hash);
-
-            setHaveAccess(true);
-            alert("You have been granted access")
+            if (result.success) {
+                console.log("Access granted, transaction confirmed:", result.transactionHash);
+                setHaveAccess(true);
+                alert("You have been granted access");
+            } else {
+                console.log("Error granting access:", result.errorMessage);
+                alert("Failed to access the paper: " + result.errorMessage);
+            }
 
         } catch (error) {
             console.log("Error granting access:", error);

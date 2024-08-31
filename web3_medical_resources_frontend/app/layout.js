@@ -34,7 +34,7 @@ const LocalNetwork = defineChain({
   name: "Local Hardhat Network",
   network: "Hardhat",
   nativeCurrency: {
-    decimals: 18,
+    decimals: 0,
     name: "Ether",
     symbol: "ETH",
   },
@@ -67,8 +67,8 @@ export default function RootLayout({ children }) {
             embeddedWallets: {
               createOnLogin: "users-without-wallets",
             },
-            defaultChain: Sepolia,
-            supportedChains: [Sepolia],
+            defaultChain: LocalNetwork,
+            supportedChains: [LocalNetwork],
           }}
         >
           <Header />

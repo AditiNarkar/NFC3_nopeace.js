@@ -6,7 +6,9 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   const { deploy, log } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  const args = [ethers.parseEther("10000000000000000000000000")];
+  const args = [
+    ethers.parseEther("100000000000000")
+  ];
 
   const MedChainToken = await deploy("MedChainToken", {
     from: deployer,

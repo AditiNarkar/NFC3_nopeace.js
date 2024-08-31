@@ -17,16 +17,23 @@ export const getContract = async () => {
 
   try {
     const { ethereum } = window;
-
-    if (!ethereum) {
+    console.log("ethereum:", ethereum)
+    if (!ethereum || !ethereum.isMetaMask) {
       throw new Error(
         "Ethereum provider not found. Please install MetaMask or another Web3 wallet."
       );
     }
 
-    // const provider = new ethers.BrowserProvider(ethereum);
-    const provider = new ethers.JsonRpcProvider("http://127.0.0.1:8545/");
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    // const provider = new ethers.providers.Web3Provider(ethereum);
+
+    //const provider = new ethers.JsonRpcProvider("http://127.0.0.1:8545/");
+
+    //await ethereum.request({ method: 'eth_requestAccounts' });
+
     const signer = await provider.getSigner();
+    console.log("signer", signer)
+
     const tokenContractReader = new ethers.Contract(
       tokenContractAddress,
       token_abi,
@@ -37,6 +44,10 @@ export const getContract = async () => {
       medical_abi,
       signer
     );
+
+    const tx = await tokenContractReader.approve(medicalContractReader, ethers.parseEther("100000"));
+    await tx.wait(1);
+    console.log("ApprovedContractToSpendToken")
 
     return { tokenContractReader, medicalContractReader };
   } catch (error) {
