@@ -6,10 +6,9 @@ const parseErrorMsg = (e) => {
   return json?.reason || json?.error?.msg;
 };
 
-const provider = new ethers.BrowserProvider("https://sepolia.infura.io/v3/");
-let signer = await provider.getSigner();
-
 let contractObject
+
+
 const initContract = async () => {
 
   if (!contractObject) {
@@ -56,7 +55,7 @@ async function requestTokens(address) {
 
 export async function getPapersAccessedByUser(userAddress) {
   try {
-    const { tokenContractReader, medicalContractReader } = await initContract();
+    const { tokenContractReader, medicalContractReader } = await getContract();
     const contract = medicalContractReader;
     if (!contract) {
       console.log("Contract is not initialized");
@@ -84,7 +83,7 @@ export async function getPapersAccessedByUser(userAddress) {
 
 export async function uploadPaper(title, contentHash, accessFee, keywords) {
   try {
-    const { tokenContractReader, medicalContractReader } = await initContract();
+    const { tokenContractReader, medicalContractReader } = await getContract();
     const contract = medicalContractReader;
     if (!contract) {
       console.log("Contract is not initialized");
@@ -112,7 +111,7 @@ export async function uploadPaper(title, contentHash, accessFee, keywords) {
 
 export async function accessPaper(address, paperId) {
   try {
-    const { tokenContractReader, medicalContractReader } = await initContract();
+    const { tokenContractReader, medicalContractReader } = await getContract();
     console.log("medicalContractReader:", medicalContractReader)
     const contract = medicalContractReader;
     if (!contract) {
@@ -151,7 +150,7 @@ export async function accessPaper(address, paperId) {
 
 export async function submitContribution(paperId, changesHash, stakeAmount) {
   try {
-    const { medicalContractReader } = await initContract();
+    const { medicalContractReader } = await getContract();
     const contract = medicalContractReader;
     if (!contract) console.log("Contract is not initialized");
     const tx = await contract.submitContribution(
@@ -172,7 +171,7 @@ export async function submitContribution(paperId, changesHash, stakeAmount) {
 
 export async function approveContribution(paperId, contributionIndex) {
   try {
-    const { medicalContractReader } = await initContract();
+    const { medicalContractReader } = await getContract();
     const contract = medicalContractReader;
     if (!contract) console.log("Contract is not initialized");
     const tx = await contract.approveContribution(paperId, contributionIndex);
@@ -189,7 +188,7 @@ export async function approveContribution(paperId, contributionIndex) {
 
 export async function getPapersByOwnerAddress(owner) {
   try {
-    const { medicalContractReader } = await initContract();
+    const { medicalContractReader } = await getContract();
     const contract = medicalContractReader;
     if (!contract) console.log("Contract is not initialized");
 
@@ -218,7 +217,7 @@ export async function getPapersByOwnerAddress(owner) {
 
 export async function getContributions(paperId) {
   try {
-    const { medicalContractReader } = await initContract();
+    const { medicalContractReader } = await getContract();
     const contract = medicalContractReader;
     if (!contract) console.log("Contract is not initialized");
 
@@ -243,7 +242,7 @@ export async function getContributions(paperId) {
 
 export async function getAccessibillity(address, paperId) {
   try {
-    const { medicalContractReader } = await initContract();
+    const { medicalContractReader } = await getContract();
     const contract = medicalContractReader;
     if (!contract) console.log("Contract is not initialized");
 
@@ -263,7 +262,7 @@ export async function getAccessibillity(address, paperId) {
 }
 export async function getUserContributionCount(user) {
   try {
-    const { medicalContractReader } = await initContract();
+    const { medicalContractReader } = await getContract();
     const contract = medicalContractReader;
     if (!contract) console.log("Contract is not initialized");
     const count = await contract.getUserContributionCount(user);
@@ -280,7 +279,7 @@ export async function getUserContributionCount(user) {
 
 export async function getPaperById(paperId) {
   try {
-    const { medicalContractReader } = await initContract();
+    const { medicalContractReader } = await getContract();
     const contract = medicalContractReader;
     if (!contract) console.log("Contract is not initialized");
     const paper = await contract.getPaperById(paperId);
@@ -299,7 +298,7 @@ export async function getPaperById(paperId) {
 
 export async function getOriginalPaper(paperId) {
   try {
-    const { medicalContractReader } = await initContract();
+    const { medicalContractReader } = await getContract();
     const contract = medicalContractReader;
     if (!contract) console.log("Contract is not initialized");
     const originalPaper = await contract.getPaperById(paperId);
@@ -316,7 +315,7 @@ export async function getOriginalPaper(paperId) {
 
 export async function getTotalPapersByCount() {
   try {
-    const { medicalContractReader } = await initContract();
+    const { medicalContractReader } = await getContract();
     const contract = medicalContractReader;
     if (!contract) console.log("Contract is not initialized");
     const totalPapers = await contract.getTotalPaperCount();
